@@ -32,6 +32,8 @@ jobs:
             build_target: android-armeabi-v7a
             artifact_name: build\Release\android-armeabi-v7a\libveldrid-spirv.so
           - os: ubuntu-latest
+            GOOS: linux
+            GOARCH: arm64
             build_args: release linux-arm64
             build_target: linux-arm64
             artifact_name: build/Release/linux-arm64/libveldrid-spirv.so
