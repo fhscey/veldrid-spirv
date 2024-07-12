@@ -68,9 +68,9 @@ jobs:
       # https://github.com/actions/setup-dotnet/issues/72
       - name: Install .NET
         if: ${{ matrix.build_target == 'win-x64'  || matrix.build_target == 'linux-arm64' }}
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.7
 
       - name: Restore Dependencies
         if: ${{ matrix.build_target == 'win-x64'  || matrix.build_target == 'linux-arm64' }}
@@ -135,7 +135,7 @@ jobs:
     
 
       - name: Install .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.7
 
