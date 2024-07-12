@@ -35,14 +35,7 @@ jobs:
             build_args: release linux-arm64
             build_target: linux-arm64
             artifact_name: build/Release/linux-arm64/libveldrid-spirv.so
-          - os: macos-latest
-            build_args: release osx 'arm64;x86_64'
-            build_target: osx
-            artifact_name: build/Release/osx/libveldrid-spirv.dylib
-          - os: macos-latest
-            build_args: release ios
-            build_target: ios
-            artifact_name: build/Release/ios/libveldrid-spirv-combined.a
+         
     name: ${{ matrix.build_target }} Native Build
 
     steps:
@@ -74,17 +67,17 @@ jobs:
       # We can only run per-platform tests on 64-bit architectures
       # https://github.com/actions/setup-dotnet/issues/72
       - name: Install .NET
-        if: ${{ matrix.build_target == 'win-x64' || matrix.build_target == 'osx' || matrix.build_target == 'linux-arm64' }}
+        if: ${{ matrix.build_target == 'win-x64'  || matrix.build_target == 'linux-arm64' }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
 
       - name: Restore Dependencies
-        if: ${{ matrix.build_target == 'win-x64' || matrix.build_target == 'osx' || matrix.build_target == 'linux-arm64' }}
+        if: ${{ matrix.build_target == 'win-x64'  || matrix.build_target == 'linux-arm64' }}
         run: dotnet restore src
 
       - name: Run Tests
-        if: ${{ matrix.build_target == 'win-x64' || matrix.build_target == 'osx' || matrix.build_target == 'linux-arm64' }}
+        if: ${{ matrix.build_target == 'win-x64' || matrix.build_target == 'linux-arm64' }}
         run: dotnet run -p src/Veldrid.SPIRV.Tests/Veldrid.SPIRV.Tests.csproj -c Release --no-restore
 
       - name: Upload ${{ matrix.build_target }} Native Library
@@ -139,17 +132,7 @@ jobs:
           name: linux-arm64
           path: build/Release/linux-arm64
 
-      - name: Download osx
-        uses: actions/download-artifact@v2
-        with:
-          name: osx
-          path: build/Release/osx
-
-      - name: Download ios
-        uses: actions/download-artifact@v2
-        with:
-          name: ios
-          path: build/Release/ios
+    
 
       - name: Install .NET
         uses: actions/setup-dotnet@v1
@@ -168,8 +151,4 @@ jobs:
           name: nuget_package
           path: bin\Packages\Release\*.nupkg
           if-no-files-found: error
-
-      - name: Publish to nuget.org
-        if: startsWith(github.ref, 'refs/tags/')
-        run: dotnet nuget push bin\Packages\Release\*.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_KEY}}
 
